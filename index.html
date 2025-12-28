@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anemia Cero Perú | Herramienta Clínica Oficial MINSA</title>
+    <meta name="description" content="Aplicación móvil offline-first para el control de la anemia en el primer nivel de atención. Cumple la NTS N° 213-MINSA/DGIESP-2024.">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- MEJORA 1: METADATA SOCIAL (WhatsApp Preview) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://anemaceroperu.com/">
+    <meta property="og:title" content="Anemia Cero Perú | Control de Anemia Oficial MINSA">
+    <meta property="og:description" content="Diagnostica y trata anemia cumpliendo la NTS 213-2024. 100% Offline, segura y diseñada para el Perú profundo.">
+    <meta property="og:image" content="https://placehold.co/1200x630/0277bd/FFFFFF/png?text=Anemia+Cero+Peru&font=inter">
+    <meta name="theme-color" content="#0277bd">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración Tailwind Personalizada -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        msaBlue: {
+                            50: '#e1f5fe',
+                            100: '#b3e5fc',
+                            500: '#0288d1',
+                            600: '#0277bd', // Azul Clínico MINSA
+                            800: '#01579b',
+                            900: '#01447e',
+                        },
+                        msaRed: {
+                            500: '#d32f2f',
+                            600: '#b71c1c', // Rojo Sangre/Alerta
+                            700: '#8c1515',
+                        }
+                    },
+                    boxShadow: {
+                        'medical': '0 4px 20px -2px rgba(2, 119, 189, 0.15)',
+                        'card': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+                    },
+                    keyframes: {
+                        'heartbeat-alert': {
+                            '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(183, 28, 28, 0)' },
+                            '50%': { transform: 'scale(1.02)', boxShadow: '0 0 0 10px rgba(183, 28, 28, 0)' },
+                            '50.1%': { transform: 'scale(1.02)', boxShadow: '0 0 0 0 rgba(183, 28, 28, 0)' },
+                            '70%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(183, 28, 28, 0)' }
+                        }
+                    },
+                    animation: {
+                        'heartbeat-alert': 'heartbeat-alert 2s infinite ease-in-out',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos adicionales y animaciones */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Ocultar flecha por defecto de details para usar la custom de FontAwesome */
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mockup del teléfono */
+        .phone-mockup {
+            border: 12px solid #1e293b;
+            border-radius: 2rem;
+            overflow: hidden;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 24px;
+            background: #1e293b;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 10;
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #0277bd, #01447e);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-msaBlue-100 selection:text-msaBlue-900">
+
+    <!-- Navbar -->
+     <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-msaBlue-600 text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-heart-pulse text-xl"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-xl text-slate-900 tracking-tight">Anemia Cero</span>
+                        <span class="text-xs font-medium text-msaBlue-600 uppercase tracking-wider">Perú v1.0</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#pilares" class="text-sm font-medium text-slate-600 hover:text-msaBlue-600 transition-colors">Beneficios</a>
+                    <a href="#caracteristicas" class="text-sm font-medium text-slate-600 hover:text-msaBlue-600 transition-colors">Características Técnicas</a>
+                    <a href="#confianza" class="text-sm font-medium text-slate-600 hover:text-msaBlue-600 transition-colors">Seguridad</a>
+                    <a href="#perfil" class="text-sm font-semibold text-white bg-msaBlue-600 px-5 py-2.5 rounded-lg hover:bg-msaBlue-800 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        Solicitar Acceso
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-msaBlue-600 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#pilares" class="block px-3 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-msaBlue-600 rounded-md">Beneficios</a>
+                <a href="#caracteristicas" class="block px-3 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-msaBlue-600 rounded-md">Características</a>
+                <a href="#confianza" class="block px-3 py-3 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-msaBlue-600 rounded-md">Seguridad</a>
+                <a href="#perfil" class="block w-full mt-4 text-center bg-msaBlue-600 text-white font-bold py-3 rounded-lg shadow-md">
+                    Solicitar Licencia
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+            <!-- Decorative Background Elements -->
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-msaBlue-100 blur-3xl opacity-50"></div>
+            <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-red-100 blur-3xl opacity-30"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-1.5 mb-6 fade-in-up">
+                            <span class="flex h-2 w-2 rounded-full bg-msaRed-600 animate-pulse"></span>
+                            <span class="text-xs font-semibold text-msaBlue-800 uppercase tracking-wide">Cumple con la NTS N° 213-MINSA 2024</span>
+                        </div>
+                        
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.15] tracking-tight mb-6 fade-in-up delay-100">
+                            La herramienta definitiva para el <span class="gradient-text">control de la anemia</span> en el primer nivel de atención.
+                        </h1>
+                        
+                        <p class="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 fade-in-up delay-200">
+                            Diagnostica, trata y registra pacientes cumpliendo la Norma Técnica de Anemia 2024. <strong class="text-slate-900">Sin Internet</strong>, segura y diseñada específicamente para el SERUMS.
+                        </p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start fade-in-up delay-300">
+                            <a href="#perfil" class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white bg-msaRed-600 rounded-xl hover:bg-msaRed-700 shadow-lg transition-all transform hover:-translate-y-1">
+								Solicitar Licencia Institucional
+								<i class="fa-solid fa-arrow-right ml-2"></i>
+							</a>
+                            <button onclick="openModal('modal-demo')" class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-msaBlue-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-msaBlue-200 shadow-sm transition-all">
+                                <i class="fa-solid fa-play mr-2 text-sm"></i>
+                                Ver Demo
+                            </button>
+                        </div>
+                        
+                        <div class="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-slate-500 fade-in-up delay-300">
+                            <span class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> No necesita Internet</span>
+                            <span class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Cumple con la NTS Anemia 2024</span>
+                            <span class="flex items-center"><i class="fa-solid fa-shield-check text-msaBlue-600 mr-2"></i> Datos Cifrados</span>
+                        </div>
+                    </div>
+
+                    <!-- Hero Image / Visual -->
+                    <div class="relative lg:h-auto flex justify-center fade-in-up delay-200">
+                        <div class="phone-mockup w-[300px] h-[600px] bg-white border-slate-800 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-500">
+                            <div class="phone-notch"></div>
+                            <!-- App UI Simulation -->
+                            <div class="h-full w-full flex flex-col font-sans">
+                                <!-- Header App -->
+                                <div class="bg-msaBlue-600 p-6 pt-10 text-white">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div class="text-xs opacity-75">Chucuito - Puno</div>
+                                        <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-wifi text-[10px] text-white/50"></i></div>
+                                    </div>
+                                    <h2 class="text-2xl font-bold">Nueva Atención</h2>
+                                </div>
+                                <!-- Body App -->
+                                <div class="p-5 space-y-4 flex-1 bg-slate-50 overflow-hidden">
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                                        <label class="text-xs font-bold text-slate-400 uppercase">Paciente</label>
+                                        <div class="text-lg font-semibold text-slate-800">Centeno Diaz, Juan</div>
+                                        <div class="flex space-x-2 mt-2">
+                                            <span class="bg-red-50 text-red-700 text-xs px-2 py-1 rounded font-bold">2 Años</span>
+                                            <span class="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded font-bold">12.5 kg</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                                        <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Hemoglobina (Hb)</label>
+                                        <div class="flex items-center space-x-2">
+                                            <!-- FIX UX: Added readonly attribute -->
+                                            <input type="text" value="10.5" readonly class="text-3xl font-bold text-slate-800 border-b-2 border-msaBlue-200 w-20 focus:outline-none bg-transparent cursor-default">
+                                            <span class="text-slate-500 font-medium">g/dL</span>
+                                        </div>
+                                        <!-- ANIMATION: Added animate-heartbeat class -->
+                                        <div class="mt-3 text-xs text-msaRed-600 bg-red-50 p-2 rounded flex items-center animate-heartbeat">
+                                            <i class="fa-solid fa-triangle-exclamation mr-2"></i> Diagnóstico: Anemia Leve
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-msaBlue-600 text-white p-4 rounded-xl shadow-md">
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <div class="text-xs opacity-75">Tratamiento Sugerido</div>
+                                                <div class="font-bold text-lg">Hierro Sulfato</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="font-bold text-2xl">3.5 ml</div>
+                                                <div class="text-xs opacity-75">c/ 24h (VO)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <button class="w-full bg-slate-900 text-white py-3 rounded-lg font-bold shadow-lg mt-4">
+                                        Guardar y Generar HIS
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-card border-l-4 border-msaRed-600 animate-bounce" style="animation-duration: 3s;">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-green-100 p-2 rounded-full text-green-600">
+                                    <i class="fa-solid fa-lock"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-500 font-bold uppercase">Privacidad</div>
+                                    <div class="text-sm font-bold text-slate-900">Datos Cifrados</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEJORA 2: BARRA DE AUTORIDAD (Trust Bar) -->
+        <section class="border-y border-slate-200 bg-slate-50/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center py-6 text-center md:text-left">
+                    <div class="flex flex-col md:flex-row items-center gap-3">
+                        <i class="fa-solid fa-scale-balanced text-slate-400 text-xl"></i>
+                        <span class="text-sm font-semibold text-slate-500">Cumple con la NTS Anemia 2024</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center gap-3">
+                        <i class="fa-solid fa-cloud-lock text-slate-400 text-xl"></i>
+                        <span class="text-sm font-semibold text-slate-500">Datos Cifrados</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center gap-3">
+                        <i class="fa-solid fa-id-card-clip text-slate-400 text-xl"></i>
+                        <span class="text-sm font-semibold text-slate-500">Licencia con Validación CMP</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center gap-3">
+                        <i class="fa-solid fa-wifi-slash text-slate-400 text-xl"></i>
+                        <span class="text-sm font-semibold text-slate-500">Sincronización entre dispositivos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 Pilares de Valor -->
+        <section id="pilares" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-msaBlue-600 font-bold tracking-wide uppercase text-sm mb-3">¿Por qué elegir Anemia Cero Perú?</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Herramienta clínica pensada para la realidad nacional y entorno rural</h3>
+                    <p class="text-lg text-slate-600">Olvídate del papel o las hojas de cálculo inseguras. Tienes una suite completa de control clínico al alcance de tu bolsillo.</p>
+                </div>
+
+                <!-- MEJORA 2: MICRO-TESTIMONIO -->
+                <div class="max-w-4xl mx-auto bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-16 flex flex-col sm:flex-row items-center sm:items-start gap-5 shadow-sm fade-in-up">
+                    <div class="flex-shrink-0">
+                        <div class="w-14 h-14 rounded-full bg-white border-2 border-msaBlue-100 flex items-center justify-center text-msaBlue-600 text-xl shadow-sm">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <p class="text-slate-700 italic text-lg mb-2">"Como médico SERUMS en Puno, Anemia Cero me salvó de errores de dosificación en altura. No volví a usar las tablas en papel. Me permitió llevar un registro de todos los controles. Simplemente funciona."</p>
+                        <div class="flex items-center justify-center sm:justify-start gap-2">
+                            <span class="font-bold text-slate-900 text-sm">Dr. Manuel Torres</span>
+                            <span class="bg-msaBlue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Beta Tester v0.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Pilar 1 -->
+                    <div class="group p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-100 hover:shadow-medical transition-all duration-300">
+                        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-msaBlue-600 mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-wifi text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3">Offline-First</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Solo necesitas internet la primera vez que la instales, luego tu base de datos viaja contigo encriptada en el dispositivo y se sincroniza automáticamente con la nube solo cuando tengas conexión disponible.
+                        </p>
+                    </div>
+
+                    <!-- Pilar 2 -->
+                    <div class="group p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-100 hover:shadow-medical transition-all duration-300">
+                        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-msaBlue-600 mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-scale-balanced text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3">Cumplimiento Normativo</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Algoritmos validados con la <strong>NTS N° 213-2024</strong> Prevención y control de la anemia por deficiencia de hierro en el niño y la niña, adolescentes, mujeres en edad fértil, gestantes y puérperas. Ajuste automático por altitud y dosificaciones calibradas para pediatría.
+                        </p>
+                    </div>
+
+                    <!-- Pilar 3 -->
+                    <div class="group p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-100 hover:shadow-medical transition-all duration-300">
+                        <div class="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center text-msaRed-600 mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-shield-halved text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3">Datos Encriptados</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Sistema antipiratería avanzado con huella digital del dispositivo y detección de Root/Jailbreak para proteger la información del paciente y los datos del usuario.
+                        </p>
+                    </div>
+
+                    <!-- Pilar 4 -->
+                    <div class="group p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-100 hover:shadow-medical transition-all duration-300">
+                        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-msaBlue-600 mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-medical-alt text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3">Productividad HIS</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Genera la codificación HIS automáticamente y exporta recetas médicas en PDF listas para imprimir o compartir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE CONTRASTE (Pain vs. Solution) -->
+        <section id="brecha" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">La brecha tecnológica en salud ¿Es mejor usar este sistema?</h2>
+                    <p class="text-lg text-slate-500 mt-4">Comparativa de riesgo entre el método tradicional y la digitalización clínica.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 rounded-2xl overflow-hidden shadow-xl border border-slate-200">
+                    <!-- Columna Izquierda: El Problema -->
+                    <div class="p-8 md:p-10 bg-slate-50 border-b md:border-b-0 md:border-r border-slate-200 relative">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-slate-300"></div>
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="bg-slate-200 p-2 rounded-full">
+                                <i class="fa-solid fa-file-medical text-slate-500 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-700">Proceso Actual (Manual)</h3>
+                        </div>
+
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1">
+                                    <i class="fa-solid fa-circle-xmark text-msaRed-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">Cálculo de Dosis</h4>
+                                    <p class="text-sm text-slate-500 mt-1">Mental o calculadora externa. Alto riesgo de error humano y sobredosis pediátrica.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1">
+                                    <i class="fa-solid fa-circle-xmark text-msaRed-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">Ajuste por Altitud</h4>
+                                    <p class="text-sm text-slate-500 mt-1">Depende de recordar tablas físicas. No se ajusta si el médico desconoce la altitud exacta.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1">
+                                    <i class="fa-solid fa-circle-xmark text-msaRed-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">Seguridad de Datos</h4>
+                                    <p class="text-sm text-slate-500 mt-1">Historias clínicas en papel vulnerables al daño, pérdida o robo de información.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Columna Derecha: La Solución -->
+                    <div class="p-8 md:p-10 bg-msaBlue-50 relative">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-msaBlue-600"></div>
+                        <div class="absolute -top-3 right-8">
+                             <span class="bg-msaBlue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">RECOMENDADO</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="bg-msaBlue-600 p-2 rounded-full">
+                                <i class="fa-solid fa-mobile-screen text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900">Con Anemia Cero Perú</h3>
+                        </div>
+
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1">
+                                    <i class="fa-solid fa-circle-check text-green-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Cálculo de Dosis</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Automatizado por peso y edad. Topes de seguridad integrados para prevenir errores.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1">
+                                    <i class="fa-solid fa-circle-check text-green-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Ajuste por Altitud</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Detección GPS automática. Corrige puntos de corte según altitud y tablas de la OMS.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1">
+                                    <i class="fa-solid fa-circle-check text-green-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Seguridad de Datos</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Base de datos local cifrada y con respaldo en la nube. Integridad garantizada en caso de pérdida o robo del dispositivo.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Características "Power User" (Rediseñado: Sin código, Enfoque en Interfaz Inteligente) -->
+        <section id="caracteristicas" class="py-20 bg-slate-50 border-y border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    
+                    <!-- Texto y Beneficios (Lado Izquierdo) -->
+                    <div class="order-2 lg:order-1">
+                        <h3 class="text-3xl font-bold text-slate-900 mb-2">Inteligencia Clínica en Tiempo Real</h3>
+                        <p class="text-slate-500 mb-8 text-lg">La aplicación hace el trabajo difícil por ti, aplicando miles de reglas clínicas en milisegundos.</p>
+                        
+                        <div class="space-y-8">
+                            <!-- Feature 1 -->
+                            <div class="flex group">
+                                <div class="flex-shrink-0 mr-5">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-msaBlue-600 shadow-sm group-hover:bg-msaBlue-600 group-hover:text-white transition-colors duration-300">
+                                        <i class="fa-solid fa-mountain-sun text-xl"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-slate-900">Ajuste Automático por Altitud</h4>
+                                    <p class="text-slate-600 mt-1">No busques tablas. La app detecta a cuántos msnm se encuentra tu centro de salud y corrige los puntos de corte de anemia al instante según los algoritmos de la OMS.</p>
+                                </div>
+                            </div>
+
+                            <!-- Feature 2 -->
+                            <div class="flex group">
+                                <div class="flex-shrink-0 mr-5">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-msaBlue-600 shadow-sm group-hover:bg-msaBlue-600 group-hover:text-white transition-colors duration-300">
+                                        <i class="fa-solid fa-prescription-bottle-medical text-xl"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-slate-900">Cálculo Pediátrico Infalible</h4>
+                                    <p class="text-slate-600 mt-1">Olvídate de calcular gotas o ml mentalmente. El sistema dosifica por peso exacto, previniendo sobredosis con alertas de seguridad en tiempo real.</p>
+                                </div>
+                            </div>
+
+                            <!-- Feature 3 -->
+                            <div class="flex group">
+                                <div class="flex-shrink-0 mr-5">
+                                    <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-white shadow-sm group-hover:bg-slate-900 transition-colors duration-300">
+                                        <i class="fa-solid fa-file-shield text-xl"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-slate-900">Validación Normativa MINSA</h4>
+                                    <p class="text-slate-600 mt-1">Cada tratamiento sugerido cumple con la NTS N° 213-2024. Actúa como una segunda opinión clínica constante en tu bolsillo.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualización del "Motor" (Lado Derecho) -->
+                    <div class="order-1 lg:order-2 relative perspective-1000">
+                        <!-- Decoración de fondo -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-blue-100 to-white rounded-full blur-3xl opacity-60 -z-10"></div>
+
+                        <!-- Tarjeta Principal "Dashboard" -->
+                        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden relative transform transition-transform hover:scale-[1.01] duration-500">
+                            
+                            <!-- Header de la Tarjeta -->
+                            <div class="bg-slate-50 border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-msaBlue-600 flex items-center justify-center text-white text-xs">
+                                        <i class="fa-solid fa-brain"></i>
+                                    </div>
+                                    <span class="font-bold text-slate-700 text-sm">Motor de Decisión Clínica</span>
+                                </div>
+                                <div class="flex gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                    <span class="text-xs font-semibold text-green-600">Activo</span>
+                                </div>
+                            </div>
+
+                            <!-- Cuerpo de la Tarjeta (El Flujo Visual) -->
+                            <div class="p-6 space-y-6">
+                                
+                                <!-- Paso 1: Input de Datos -->
+                                <div class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-bold">1</div>
+                                        <div class="w-0.5 h-12 bg-slate-200 my-1"></div>
+                                    </div>
+                                    <div class="flex-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-xs font-bold text-slate-500 uppercase">Datos del Paciente</span>
+                                            <i class="fa-solid fa-pen text-slate-300 text-xs"></i>
+                                        </div>
+                                        <div class="text-sm font-semibold text-slate-800">Hb: 10.2 g/dL | Edad: 18m | Peso: 9.5kg</div>
+                                    </div>
+                                </div>
+
+                                <!-- Paso 2: Procesamiento Inteligente (Animación visual) -->
+                                <div class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-msaBlue-100 flex items-center justify-center text-msaBlue-600 text-xs">
+                                            <i class="fa-solid fa-gears fa-spin" style="--fa-animation-duration: 3s;"></i>
+                                        </div>
+                                        <div class="w-0.5 h-12 bg-slate-200 my-1"></div>
+                                    </div>
+                                    <div class="flex-1 grid grid-cols-2 gap-2">
+                                        <!-- Badge Altitud -->
+                                        <div class="bg-blue-50 border border-blue-100 p-2 rounded flex items-center gap-2">
+                                            <i class="fa-solid fa-mountain text-msaBlue-500 text-xs"></i>
+                                            <div>
+                                                <div class="text-[10px] text-blue-400 font-bold uppercase">Altitud</div>
+                                                <div class="text-xs font-bold text-slate-700">3,812 msnm (Puno)</div>
+                                            </div>
+                                        </div>
+                                        <!-- Badge Norma -->
+                                        <div class="bg-green-50 border border-green-100 p-2 rounded flex items-center gap-2">
+                                            <i class="fa-solid fa-check-double text-green-500 text-xs"></i>
+                                            <div>
+                                                <div class="text-[10px] text-green-500 font-bold uppercase">Normativa</div>
+                                                <div class="text-xs font-bold text-slate-700">NTS-213 OK</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Paso 3: Resultado Seguro -->
+                                <div class="flex items-start gap-4">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-msaRed-600 flex items-center justify-center text-white text-xs shadow-lg shadow-msaRed-200">
+                                            <i class="fa-solid fa-check"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 bg-slate-900 p-4 rounded-xl shadow-lg relative overflow-hidden">
+                                        <!-- Efecto de brillo -->
+                                        <div class="absolute top-0 right-0 w-20 h-20 bg-white opacity-5 rounded-full blur-xl"></div>
+                                        
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <div class="text-xs text-slate-400 uppercase font-bold">Diagnóstico Ajustado</div>
+                                                <div class="text-lg font-bold text-white">Anemia Leve</div>
+                                            </div>
+                                            <i class="fa-solid fa-shield-halved text-slate-600"></i>
+                                        </div>
+                                        
+                                        <div class="mt-3 pt-3 border-t border-slate-700 flex justify-between items-end">
+                                            <div>
+                                                <div class="text-[10px] text-slate-400">Dosis Calculada</div>
+                                                <div class="text-2xl font-bold text-msaBlue-400">2.5 ml</div>
+                                            </div>
+                                            <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Vía Oral / c/24h</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        
+                        <!-- Elemento flotante decorativo -->
+                        <div class="absolute -right-4 top-10 bg-white p-3 rounded-lg shadow-lg border border-slate-100 animate-bounce hidden sm:block" style="animation-duration: 4s;">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>
+                                <span class="text-xs font-bold text-slate-700">Alerta: Paciente no registrado</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Confianza (B2B) -->
+        <section id="confianza" class="py-24 bg-msaBlue-900 text-white relative overflow-hidden">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-msaBlue-800 rounded-full blur-[100px] opacity-50"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold mb-4">Es más que una app, es una Bóveda Clínica.</h3>
+                    <p class="text-msaBlue-100 max-w-2xl mx-auto text-lg">
+                        Protegemos la integridad de los datos clínicos de los pacientes con la misma rigurosidad que las instituciones financieras protegen el dinero.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-xl text-center hover:bg-white/10 transition-colors">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-200">
+                            <i class="fa-solid fa-fingerprint text-3xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2">Device Fingerprint</h4>
+                        <p class="text-blue-100/80 text-sm">
+                            Licenciamiento único vinculado irrevocablemente al teléfono que estés usando. Esto evita duplicados y el uso ilegal para garantiza la trazabilidad.
+                        </p>
+                    </div>
+
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-xl text-center hover:bg-white/10 transition-colors">
+                        <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-200">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2">Integridad en la nube</h4>
+                        <p class="text-blue-100/80 text-sm">
+                            Validación de datos en la nube. Cada registro tiene hash de verificación para detectar cualquier alteración posterior.
+                        </p>
+                    </div>
+
+                    <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-xl text-center hover:bg-white/10 transition-colors">
+                        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-red-200">
+                            <i class="fa-solid fa-user-secret text-3xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-2">Protección Antimanipulación</h4>
+                        <p class="text-blue-100/80 text-sm">
+                            El sistema detecta intentos de Root, Jailbreak o emuladores y bloquea la aplicación automáticamente para preservar la seguridad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEJORA 3: SECCIÓN FAQ (Manejo de Objeciones) -->
+        <section id="faq" class="py-20 bg-slate-50">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Preguntas Frecuentes</h2>
+                    <p class="text-slate-600">Aquí resolvemos las dudas técnicas más comunes de nuestros futuros usuarios.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Pregunta 1: Offline -->
+                    <details class="group border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center cursor-pointer p-5 font-semibold text-slate-800 select-none hover:bg-slate-50 transition-colors">
+                            ¿Cómo funciona la sincronización sin internet?
+                            <i class="fa-solid fa-chevron-down text-msaBlue-600 transform group-open:rotate-180 transition-transform duration-300"></i>
+                        </summary>
+                        <div class="p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100 mt-4">
+                            La aplicación funciona en modo "offline-first" (Únicamente necesitas internet en el primer uso para validad la licencia) Luego todo se guarda en el teléfono del usuario. En cuanto el dispositivo se conecte a WiFi o datos móviles (por ejemplo, al llegar al hospital central), los datos se sincronizan de forma segura con la nube sin interrumpir el trabajo.
+                        </div>
+                    </details>
+
+                    <!-- Pregunta 2: Compatibilidad -->
+                    <details class="group border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center cursor-pointer p-5 font-semibold text-slate-800 select-none hover:bg-slate-50 transition-colors">
+                            ¿Funciona en celulares antiguos?
+                            <i class="fa-solid fa-chevron-down text-msaBlue-600 transform group-open:rotate-180 transition-transform duration-300"></i>
+                        </summary>
+                        <div class="p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100 mt-4">
+                            Sí. Anemia Cero Perú está optimizada para funcionar fluidamente en dispositivos con Android 8.0 o superior, lo que cubre el 95% de los equipos en uso actualmente en postas de salud. No requiere procesadores de gama alta.
+                        </div>
+                    </details>
+
+                    <!-- Pregunta 3: Integridad de Datos -->
+                    <details class="group border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center cursor-pointer p-5 font-semibold text-slate-800 select-none hover:bg-slate-50 transition-colors">
+                            ¿Cómo garantizan que no se altere la data?
+                            <i class="fa-solid fa-chevron-down text-msaBlue-600 transform group-open:rotate-180 transition-transform duration-300"></i>
+                        </summary>
+                        <div class="p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100 mt-4">
+                            Utilizamos una arquitectura similar a la Blockchain en la base de datos (Supabase). Cada registro tiene un "hash" inmutable. Si alguien intenta editar una historia clínica manualmente en la nube, el sistema detectará la discrepancia y marcará el registro como alterado automáticamente.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Captura de Leads (Modificada para contacto y licencia) -->
+        <section id="perfil" class="py-24 bg-white relative overflow-hidden">
+            <!-- Elemento decorativo de fondo -->
+            <div class="absolute right-0 top-0 h-full w-1/2 bg-msaBlue-50 hidden lg:block"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    
+                    <!-- Columna Izquierda: La Oferta de Valor -->
+                    <div class="mb-10 lg:mb-0">
+                        <div class="inline-flex items-center space-x-2 bg-msaRed-100 text-msaRed-700 rounded-full px-3 py-1 mb-6 w-fit">
+                            <i class="fa-solid fa-handshake text-sm"></i>
+                            <span class="text-xs font-bold uppercase tracking-wide">Atención Preferencial a Médicos y Enfermeras</span>
+                        </div>
+                        
+                        <h2 class="text-4xl font-bold text-slate-900 mb-6">Solicita tu licencia profesional única</h2>
+                        <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                            No vendemos software, entregamos herramientas de salud pública. Completa el formulario y recibe una <strong>matriz de impacto</strong> sobre cómo Anemia Cero Perú puede optimizar tus indicadores de cobertura en menos de 30 días.
+                        </p>
+
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                                    <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                                </div>
+                                <span class="ml-3 text-slate-700 font-medium">Ofrecemos licencias personales o para todo el puesto de salud.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                                    <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                                </div>
+                                <span class="ml-3 text-slate-700 font-medium">Capacitación técnica con un manual incluido para el personal SERUMS.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                                    <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                                </div>
+                                <span class="ml-3 text-slate-700 font-medium">Cumplimiento garantizado de normativas MINSA.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- OPTIMIZACIÓN DEL FORMULARIO (Trigger de Escasez) -->
+                    <!-- Columna Derecha: El Formulario Institucional -->
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 lg:p-10 relative">
+                        
+                        <!-- Badge: Acceso Prioritario -->
+                        <div class="absolute -top-3 right-6">
+                            <span class="bg-msaBlue-900 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-200">
+                                Acceso Prioritario
+                            </span>
+                        </div>
+
+                        <!-- Banner de Escasez (Beta Cerrada) -->
+                        <div class="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-6 flex items-start gap-3">
+                            <i class="fa-solid fa-triangle-exclamation text-orange-500 mt-0.5"></i>
+                            <div class="text-sm">
+                                <span class="font-bold text-orange-800">Primera Implementación - Beta Cerrada:</span> 
+                                <span class="text-orange-700"> Solo quedan <strong>10 cupos</strong> disponibles para esta semana de implementación.</span>
+                            </div>
+                        </div>
+
+                        <div class="absolute -top-6 left-8 bg-msaBlue-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Solicita tu licencia inmediatamente
+                        </div>
+
+                        <form id="lead-form" class="space-y-4 mt-8" onsubmit="handleLeadSubmit(event)">
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Nombre Completo</label>
+									<input type="text" id="nombre" required class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-msaBlue-500 outline-none" placeholder="Dr. Juan Pérez">
+								</div>
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Cargo / Rol</label>
+									<select id="cargo" required class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-msaBlue-500 outline-none bg-white">
+										<option value="" disabled selected>Seleccione...</option>
+										<option value="Médico SERUMS">Médico SERUMS / Residente</option>
+										<option value="Enfermería">Lic. en Enfermería / Obstetricia</option>
+										<option value="Director">Director de Red / Hospital</option>
+										<option value="Informática">Responsable de Informática / SIS</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp</label>
+									<input type="tel" id="telefono" required placeholder="Ej. 999888777" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-msaBlue-500 outline-none">
+								</div>
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Correo Electrónico</label>
+									<input type="email" id="email" required class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-msaBlue-500 outline-none" placeholder="correo@ejemplo.com">
+								</div>
+							</div>
+
+							<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+								<div>
+									<label class="block text-[10px] font-bold text-slate-500 uppercase">Departamento</label>
+									<select id="sel-dpto" required class="w-full rounded-lg border-slate-300 border p-2 text-xs outline-none">
+										<option value="">Seleccione...</option>
+									</select>
+								</div>
+								<div>
+									<label class="block text-[10px] font-bold text-slate-500 uppercase">Provincia</label>
+									<select id="sel-prov" disabled required class="w-full rounded-lg border-slate-300 border p-2 text-xs outline-none">
+										<option value="">Seleccione...</option>
+									</select>
+								</div>
+								<div>
+									<label class="block text-[10px] font-bold text-slate-500 uppercase">Distrito</label>
+									<select id="sel-dist" disabled required class="w-full rounded-lg border-slate-300 border p-2 text-xs outline-none">
+										<option value="">Seleccione...</option>
+									</select>
+								</div>
+							</div>
+
+							<div>
+								<label class="block text-xs font-bold text-slate-700 mb-1">Centro de Salud (Busca tu IPRESS)</label>
+								<input list="ipress-list" id="ipress-choice" disabled required placeholder="Escribe para buscar..." class="w-full rounded-lg border-slate-300 border p-2.5 text-sm outline-none focus:border-msaBlue-500">
+								<datalist id="ipress-list"></datalist>
+							</div>
+
+							<button type="submit" id="submit-btn" class="w-full bg-msaBlue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-msaBlue-800 transition-all flex justify-center items-center gap-2 mt-2">
+								Solicitar Licencia Personal / Institucional
+							</button>
+						</form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MEJORA 4: FOOTER CORPORATIVO (Capa Legal) -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <i class="fa-solid fa-heart-pulse text-msaBlue-600"></i>
+                    <span class="font-bold text-white text-lg">Anemia Cero Perú</span>
+                </div>
+                <div class="text-sm text-slate-500">
+                    &copy; 2024 Anemia Cero Perú | Sistema de Control Clínico - Basado en NTS N° 213-MINSA/DGIESP-2024.
+                </div>
+            </div>
+            <div class="mt-8 text-center text-xs text-slate-600">
+                <p>Esta aplicación es una herramienta de apoyo a la decisión clínica. Siempre siga su juicio como profesional de la salud.</p>
+            </div>
+            
+            <!-- Enlaces Legales Corporativos -->
+            <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-xs text-slate-500">
+                <a href="#" class="hover:text-msaBlue-400 transition-colors">Política de Privacidad</a>
+                <span class="hidden md:inline text-slate-700">|</span>
+                <a href="#" class="hover:text-msaBlue-400 transition-colors">Términos de Uso</a>
+                <span class="hidden md:inline text-slate-700">|</span>
+                <a href="#" class="hover:text-msaBlue-400 transition-colors">Libro de Reclamaciones</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal: Contacto / Licencia -->
+    <div id="modal-contacto" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm transition-opacity" onclick="closeModal('modal-contacto')"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <i class="fa-solid fa-building-columns text-msaBlue-600"></i>
+                            </div>
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-xl font-semibold leading-6 text-slate-900" id="modal-title">Solicitar Licencia Institucional</h3>
+                                <div class="mt-4 space-y-4">
+                                    <p class="text-sm text-slate-500">Complete el formulario para iniciar el proceso de validación con su DIRESA o DIRIS correspondiente.</p>
+                                    <form class="space-y-3" onsubmit="event.preventDefault(); submitForm(this);">
+                                        <div>
+                                            <label class="block text-xs font-medium text-slate-700 uppercase">Institución / Red de Salud</label>
+                                            <input type="text" required class="mt-1 block w-full rounded-md border-slate-300 bg-slate-50 border p-2 text-slate-900 shadow-sm focus:border-msaBlue-500 focus:ring-msaBlue-500 sm:text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-slate-700 uppercase">Correo Institucional</label>
+                                            <input type="email" required class="mt-1 block w-full rounded-md border-slate-300 bg-slate-50 border p-2 text-slate-900 shadow-sm focus:border-msaBlue-500 focus:ring-msaBlue-500 sm:text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-slate-700 uppercase">Cargo</label>
+                                            <select class="mt-1 block w-full rounded-md border-slate-300 bg-slate-50 border p-2 text-slate-900 shadow-sm focus:border-msaBlue-500 focus:ring-msaBlue-500 sm:text-sm">
+                                                <option>Médico SERUMS</option>
+                                                <option>Enfermera CRED</option>
+                                                <option>Responsable de Informática</option>
+                                                <option>Directivo de Red</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="w-full inline-flex justify-center rounded-md bg-msaBlue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-msaBlue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-msaBlue-600 mt-2">
+                                            Enviar Solicitud
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Demo -->
+    <div id="modal-demo" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm transition-opacity" onclick="closeModal('modal-demo')"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-slate-900 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-slate-700">
+                    <div class="bg-slate-900 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-semibold leading-6 text-white">Demo Interactiva</h3>
+                            <button onclick="closeModal('modal-demo')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                        </div>
+                        <!-- Placeholder Video / Animation -->
+                        <div class="aspect-video bg-black rounded-lg flex items-center justify-center relative overflow-hidden group cursor-pointer">
+                            <div class="absolute inset-0 bg-[url('https://picsum.photos/seed/medtech/800/450.jpg')] bg-cover opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                            <div class="w-16 h-16 bg-msaRed-600 rounded-full flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform z-10">
+                                <i class="fa-solid fa-play text-white text-2xl"></i>
+                            </div>
+                            <p class="absolute bottom-4 text-white text-sm font-medium">Ver flujo de diagnóstico completo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[110] flex flex-col gap-2"></div>
+
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu on link click
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Modal Logic
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('hidden');
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Form Submission Simulation (Modal)
+        function submitForm(form) {
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            
+            // Loading state
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Success state
+                closeModal('modal-contacto');
+                showToast('Solicitud enviada correctamente. Nos contactaremos pronto.', 'success');
+                btn.innerText = originalText;
+                btn.disabled = false;
+                form.reset();
+            }, 1500);
+        }
+
+        // Lead Generation Form Handler (Section)
+        function handleLeadSubmit(event) {
+			event.preventDefault();
+			const btn = document.getElementById('submit-btn');
+			const form = document.getElementById('lead-form');
+			
+			btn.disabled = true;
+			btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+
+			// 1. RECOGER DATOS
+			const formData = new FormData();
+			formData.append('nombre', document.getElementById('nombre').value);
+			formData.append('cargo', document.getElementById('cargo').value);
+			formData.append('telefono', document.getElementById('telefono').value);
+			formData.append('email', document.getElementById('email').value);
+			formData.append('dpto', document.getElementById('sel-dpto').value);
+			formData.append('prov', document.getElementById('sel-prov').value);
+			formData.append('dist', document.getElementById('sel-dist').value);
+			formData.append('ipress', document.getElementById('ipress-choice').value);
+
+			// 2. ENVIAR A GOOGLE SHEETS
+			// REEMPLAZA LA URL DE ABAJO POR TU URL DE GOOGLE APPS SCRIPT
+			const scriptURL = 'https://script.google.com/macros/s/AKfycbxBAvn0Z7XzByUOuvCARL07XmmV-Nhk6e3AKcApt_FvkQINXRRXqH9u7AC-STjGQ5zeeA/exec';
+
+			fetch(scriptURL, { method: 'POST', body: formData })
+			.then(response => {
+				// 3. MOSTRAR MENSAJE DE ÉXITO Y BOTÓN DE WHATSAPP
+				const nombre = document.getElementById('nombre').value;
+				const cargo = document.getElementById('cargo').value;
+				const centro = document.getElementById('ipress-choice').value;
+				
+				const miWhatsApp = "51902151770"; // Tu número real
+				const mensajeWa = encodeURIComponent(`Hola Anemia Cero Perú, soy el/la ${cargo} ${nombre} del centro ${centro}. Acabo de registrarme y deseo mi licencia.`);
+				const whatsappLink = `https://wa.me/${miWhatsApp}?text=${mensajeWa}`;
+
+				const formContainer = form.parentElement;
+				formContainer.innerHTML = `
+					<div class="text-center py-8 fade-in-up">
+						<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+							<i class="fa-solid fa-check text-green-600 text-3xl"></i>
+						</div>
+						<h3 class="text-xl font-bold text-slate-900 mb-2">¡Datos Registrados!</h3>
+						<p class="text-sm text-slate-600 mb-6">
+							Gracias. Nuestro equipo de soporte se pondrá en contacto contigo para solucionar tus inquietudes.
+						</p>
+						<div class="p-5 bg-msaBlue-50 rounded-xl border border-msaBlue-100">
+							<p class="text-xs font-bold text-msaBlue-800 uppercase mb-3 text-center">¿Quieres solicitar tu licencia de forma inmediata?</p>
+							<a href="${whatsappLink}" target="_blank" class="w-full inline-flex justify-center items-center px-6 py-4 bg-[#25D366] text-white font-bold rounded-lg hover:bg-[#128C7E] transition-all shadow-md">
+								<i class="fa-brands fa-whatsapp mr-2 text-2xl"></i>
+								SOLICITAR LICENCIA POR WHATSAPP
+							</a>
+						</div>
+					</div>
+				`;
+			})
+			.catch(error => {
+				console.error('Error!', error.message);
+				alert('Hubo un error al enviar los datos. Por favor, intenta de nuevo.');
+				btn.disabled = false;
+				btn.innerText = 'Solicitar Licencia Personal / Institucional';
+			});
+		}
+
+        // Custom Toast Notification
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-slate-800' : 'bg-red-600';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+
+            toast.className = `${bgClass} text-white px-6 py-4 rounded-lg shadow-xl flex items-center gap-3 transform transition-all duration-300 translate-y-10 opacity-0 min-w-[300px]`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-green-400"></i>
+                <span class="font-medium text-sm">${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            });
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+                nav.classList.replace('bg-white/95', 'bg-white/98');
+            } else {
+                nav.classList.remove('shadow-md');
+                nav.classList.replace('bg-white/98', 'bg-white/95');
+            }
+        });
+    </script>
+	<!-- Cargar la data primero -->
+	<script src="assets/js/data.js"></script>
+
+	<script>
+	// 1. POBLAR SELECTORES DINÁMICOS
+	const selDpto = document.getElementById('sel-dpto');
+	const selProv = document.getElementById('sel-prov');
+	const selDist = document.getElementById('sel-dist');
+	const ipressInput = document.getElementById('ipress-choice');
+	const ipressList = document.getElementById('ipress-list');
+
+	// Cargar Departamentos
+	Object.keys(db_ubicacion).sort().forEach(dpto => {
+		selDpto.innerHTML += `<option value="${dpto}">${dpto}</option>`;
+	});
+
+	selDpto.addEventListener('change', () => {
+		selProv.innerHTML = '<option value="">Seleccione...</option>';
+		selDist.innerHTML = '<option value="">Seleccione...</option>';
+		selDist.disabled = true;
+		ipressInput.disabled = true;
+		
+		if (selDpto.value) {
+			selProv.disabled = false;
+			Object.keys(db_ubicacion[selDpto.value]).sort().forEach(prov => {
+				selProv.innerHTML += `<option value="${prov}">${prov}</option>`;
+			});
+		} else {
+			selProv.disabled = true;
+		}
+	});
+
+	selProv.addEventListener('change', () => {
+		selDist.innerHTML = '<option value="">Seleccione...</option>';
+		ipressInput.disabled = true;
+		
+		if (selProv.value) {
+			selDist.disabled = false;
+			Object.keys(db_ubicacion[selDpto.value][selProv.value]).sort().forEach(dist => {
+				selDist.innerHTML += `<option value="${dist}">${dist}</option>`;
+			});
+		} else {
+			selDist.disabled = true;
+		}
+	});
+
+	selDist.addEventListener('change', () => {
+		ipressList.innerHTML = '';
+		if (selDist.value) {
+			ipressInput.disabled = false;
+			const establecimientos = db_ubicacion[selDpto.value][selProv.value][selDist.value];
+			establecimientos.sort().forEach(ipress => {
+				ipressList.innerHTML += `<option value="${ipress}">`;
+			});
+		} else {
+			ipressInput.disabled = true;
+		}
+	});
+
+	// 2. MANEJO DE ENVÍO Y MENSAJE DE WHATSAPP
+	function handleLeadSubmit(event) {
+		event.preventDefault();
+		const btn = document.getElementById('submit-btn');
+		btn.disabled = true;
+		btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
+
+		const nombre = document.getElementById('nombre').value;
+		const cargo = document.getElementById('cargo').value;
+		const centro = document.getElementById('ipress-choice').value;
+		
+		// CAMBIA ESTO POR TU NÚMERO REAL
+		const miWhatsApp = "51902151770"; 
+		const mensajeWa = encodeURIComponent(`Hola Anemia Cero Perú, soy el/la ${cargo} ${nombre} del centro ${centro}. Solicito información para adquirir mi licencia.`);
+		const whatsappLink = `https://wa.me/${miWhatsApp}?text=${mensajeWa}`;
+
+		setTimeout(() => {
+			const formContainer = document.getElementById('lead-form').parentElement;
+			formContainer.innerHTML = `
+				<div class="text-center py-8 fade-in-up">
+					<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+						<i class="fa-solid fa-check text-green-600 text-3xl"></i>
+					</div>
+					<h3 class="text-xl font-bold text-slate-900 mb-2">¡Solicitud Recibida!</h3>
+					<p class="text-sm text-slate-600 mb-6">
+						Gracias, nuestro equipo de soporte se pondrá en contacto contigo para solucionar tus inquietudes. 
+					</p>
+					<div class="p-5 bg-msaBlue-50 rounded-xl border border-msaBlue-100">
+						<p class="text-xs font-bold text-msaBlue-800 uppercase mb-3 text-center">¿Necesitas la licencia ahora mismo?</p>
+						<a href="${whatsappLink}" target="_blank" class="w-full inline-flex justify-center items-center px-6 py-4 bg-[#25D366] text-white font-bold rounded-lg hover:bg-[#128C7E] transition-all shadow-md">
+							<i class="fa-brands fa-whatsapp mr-2 text-2xl"></i>
+							Solicitar inmediatamente por WhatsApp
+						</a>
+					</div>
+				</div>
+			`;
+		}, 1500);
+	}
+	</script>
+	
+	<a href="https://wa.me/51902151770?text=Hola!%20Estoy%20en%20la%20web%20de%20Anemia%20Cero%20y%20tengo%20una%20consulta." 
+	   target="_blank" 
+	   class="fixed bottom-6 left-6 z-[100] bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform md:hidden">
+		<i class="fa-brands fa-whatsapp text-3xl"></i>
+	</a>
+</body>
+</html>

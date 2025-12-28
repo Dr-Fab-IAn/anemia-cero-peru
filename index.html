@@ -1038,33 +1038,36 @@
 			
 			btn.disabled = true;
 			btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
-
-			// 1. RECOGER DATOS
-			const formData = new FormData();
-			formData.append('nombre', document.getElementById('nombre').value);
-			formData.append('cargo', document.getElementById('cargo').value);
-			formData.append('telefono', document.getElementById('telefono').value);
-			formData.append('email', document.getElementById('email').value);
-			formData.append('dpto', document.getElementById('sel-dpto').value);
-			formData.append('prov', document.getElementById('sel-prov').value);
-			formData.append('dist', document.getElementById('sel-dist').value);
-			formData.append('ipress', document.getElementById('ipress-choice').value);
-
-			// 2. ENVIAR A GOOGLE SHEETS
-			// REEMPLAZA LA URL DE ABAJO POR TU URL DE GOOGLE APPS SCRIPT
+		
+			// 1. RECOGER DATOS USANDO URLSearchParams (Esto soluciona el problema)
+			const params = new URLSearchParams();
+			params.append('nombre', document.getElementById('nombre').value);
+			params.append('cargo', document.getElementById('cargo').value);
+			params.append('telefono', document.getElementById('telefono').value);
+			params.append('email', document.getElementById('email').value);
+			params.append('dpto', document.getElementById('sel-dpto').value);
+			params.append('prov', document.getElementById('sel-prov').value);
+			params.append('dist', document.getElementById('sel-dist').value);
+			params.append('ipress', document.getElementById('ipress-choice').value);
+		
 			const scriptURL = 'https://script.google.com/macros/s/AKfycbxBAvn0Z7XzByUOuvCARL07XmmV-Nhk6e3AKcApt_FvkQINXRRXqH9u7AC-STjGQ5zeeA/exec';
-
-			fetch(scriptURL, { method: 'POST', body: formData })
-			.then(response => {
-				// 3. MOSTRAR MENSAJE DE ÉXITO Y BOTÓN DE WHATSAPP
+		
+			// 2. ENVIAR A GOOGLE SHEETS
+			fetch(scriptURL, { 
+				method: 'POST', 
+				body: params, // Enviamos params en lugar de formData
+				mode: 'no-cors' // Importante para evitar bloqueos de seguridad de Google
+			})
+			.then(() => {
+				// 3. MOSTRAR MENSAJE DE ÉXITO (Como usamos 'no-cors', Google no devuelve respuesta, pero los datos llegan)
 				const nombre = document.getElementById('nombre').value;
 				const cargo = document.getElementById('cargo').value;
 				const centro = document.getElementById('ipress-choice').value;
 				
-				const miWhatsApp = "51902151770"; // Tu número real
+				const miWhatsApp = "51902151770"; 
 				const mensajeWa = encodeURIComponent(`Hola Anemia Cero Perú, soy el/la ${cargo} ${nombre} del centro ${centro}. Acabo de registrarme y deseo mi licencia.`);
 				const whatsappLink = `https://wa.me/${miWhatsApp}?text=${mensajeWa}`;
-
+		
 				const formContainer = form.parentElement;
 				formContainer.innerHTML = `
 					<div class="text-center py-8 fade-in-up">
@@ -1076,10 +1079,10 @@
 							Gracias. Nuestro equipo de soporte se pondrá en contacto contigo para solucionar tus inquietudes.
 						</p>
 						<div class="p-5 bg-msaBlue-50 rounded-xl border border-msaBlue-100">
-							<p class="text-xs font-bold text-msaBlue-800 uppercase mb-3 text-center">¿Quieres solicitar tu licencia de forma inmediata?</p>
+							<p class="text-xs font-bold text-msaBlue-800 uppercase mb-3 text-center">¿Quieres tu licencia ahora mismo?</p>
 							<a href="${whatsappLink}" target="_blank" class="w-full inline-flex justify-center items-center px-6 py-4 bg-[#25D366] text-white font-bold rounded-lg hover:bg-[#128C7E] transition-all shadow-md">
 								<i class="fa-brands fa-whatsapp mr-2 text-2xl"></i>
-								SOLICITAR LICENCIA POR WHATSAPP
+								SOLICITAR POR WHATSAPP
 							</a>
 						</div>
 					</div>
@@ -1087,12 +1090,11 @@
 			})
 			.catch(error => {
 				console.error('Error!', error.message);
-				alert('Hubo un error al enviar los datos. Por favor, intenta de nuevo.');
+				alert('Hubo un problema. Por favor intenta de nuevo.');
 				btn.disabled = false;
-				btn.innerText = 'Solicitar Licencia Personal / Institucional';
+				btn.innerHTML = 'Solicitar Licencia Personal / Institucional';
 			});
 		}
-
         // Custom Toast Notification
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -1240,4 +1242,5 @@
 		<i class="fa-brands fa-whatsapp text-3xl"></i>
 	</a>
 </body>
+
 </html>

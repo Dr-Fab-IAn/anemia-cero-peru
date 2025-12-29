@@ -1193,51 +1193,6 @@
 			ipressInput.disabled = true;
 		}
 	});
-
-	// 2. MANEJO DE ENVÍO Y MENSAJE DE WHATSAPP
-	function handleLeadSubmit(event) {
-		event.preventDefault();
-		const btn = document.getElementById('submit-btn');
-		btn.disabled = true;
-		btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
-
-		const nombre = document.getElementById('nombre').value;
-		const cargo = document.getElementById('cargo').value;
-		const centro = document.getElementById('ipress-choice').value;
-		
-		// CAMBIA ESTO POR TU NÚMERO REAL
-		const miWhatsApp = "51902151770"; 
-		const mensajeWa = encodeURIComponent(`Hola Anemia Cero Perú, soy el/la ${cargo} ${nombre} del centro ${centro}. Solicito información para adquirir mi licencia.`);
-		const whatsappLink = `https://wa.me/${miWhatsApp}?text=${mensajeWa}`;
-
-		setTimeout(() => {
-			const formContainer = document.getElementById('lead-form').parentElement;
-			formContainer.innerHTML = `
-				<div class="text-center py-8 fade-in-up">
-					<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-						<i class="fa-solid fa-check text-green-600 text-3xl"></i>
-					</div>
-					<h3 class="text-xl font-bold text-slate-900 mb-2">¡Solicitud Recibida!</h3>
-					<p class="text-sm text-slate-600 mb-6">
-						Gracias, nuestro equipo de soporte se pondrá en contacto contigo para solucionar tus inquietudes. 
-					</p>
-					<div class="p-5 bg-msaBlue-50 rounded-xl border border-msaBlue-100">
-						<p class="text-xs font-bold text-msaBlue-800 uppercase mb-3 text-center">¿Necesitas la licencia ahora mismo?</p>
-						<a href="${whatsappLink}" target="_blank" class="w-full inline-flex justify-center items-center px-6 py-4 bg-[#25D366] text-white font-bold rounded-lg hover:bg-[#128C7E] transition-all shadow-md">
-							<i class="fa-brands fa-whatsapp mr-2 text-2xl"></i>
-							Solicitar inmediatamente por WhatsApp
-						</a>
-					</div>
-				</div>
-			`;
-		}, 1500);
-	}
 	</script>
-	
-	<a href="https://wa.me/51902151770?text=Hola!%20Estoy%20en%20la%20web%20de%20Anemia%20Cero%20y%20tengo%20una%20consulta." 
-	   target="_blank" 
-	   class="fixed bottom-6 left-6 z-[100] bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform md:hidden">
-		<i class="fa-brands fa-whatsapp text-3xl"></i>
-	</a>
 </body>
 </html>
